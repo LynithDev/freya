@@ -25,7 +25,9 @@ fn resolve_language(language: String) -> Option<EditorLanguage> {
 const MARKDOWN_CONTENT: &str = r#"
 # Markdown Viewer Example
 
-This is a demonstration of the **MarkdownViewer** component in Freya.
+This is a demonstration of the **MarkdownViewer** component in Freya. <badge/>
+
+Custom inline elements like this counter <counter/> can flow within the text.
 
 [![](https://avatars.githubusercontent.com/u/38158676?v=4)]()
 
@@ -130,7 +132,36 @@ fn app() -> impl IntoElement {
             .child(
                 MarkdownViewer::new(MARKDOWN_CONTENT)
                     .code_editor_language(resolve_language)
-                    .padding(18.),
+                    .padding(18.)
+                    .inline_element(|html: String| {
+                        if html.starts_with("<counter") {
+                            Some(Counter.into_element())
+                        } else if html.starts_with("<badge") {
+                            Some(
+                                rect()
+                                    .background((0, 119, 182))
+                                    .corner_radius(8.)
+                                    .padding(Gaps::new(2., 8., 2., 8.))
+                                    .child(label().text("New").color(Color::WHITE).font_size(12.))
+                                    .into_element(),
+                            )
+                        } else {
+                            None
+                        }
+                    }),
             ),
     )
+}
+
+#[derive(PartialEq)]
+struct Counter;
+
+impl Component for Counter {
+    fn render(&self) -> impl IntoElement {
+        let mut count = use_state(|| 0);
+        Button::new()
+            .rounded_full()
+            .on_press(move |_| *count.write() += 1)
+            .child(format!("Clicked {} times", count.read()))
+    }
 }
