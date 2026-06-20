@@ -20,10 +20,18 @@ fn app() -> impl IntoElement {
         .child(rect().spacing(6.).children(disabled_inputs(text)))
 }
 
-fn inputs(text: State<String>) -> [Element; 10] {
+fn inputs(text: State<String>) -> [Element; 11] {
     [
         Input::new(text).placeholder("Normal").into(),
-        Input::new(text).placeholder("Small Text").font_size(10.).into(),
+        Input::new(text)
+            .placeholder("Centered")
+            .text_align(TextAlign::Center)
+            .inner_margin(Gaps::new_symmetric(8., 4.))
+            .into(),
+        Input::new(text)
+            .placeholder("Small Text")
+            .font_size(10.)
+            .into(),
         Input::new(text).placeholder("Filled").filled().into(),
         Input::new(text).placeholder("Flat").flat().into(),
         Input::new(text).placeholder("Expanded").expanded().into(),
@@ -51,10 +59,20 @@ fn inputs(text: State<String>) -> [Element; 10] {
     ]
 }
 
-fn disabled_inputs(text: State<String>) -> [Element; 10] {
+fn disabled_inputs(text: State<String>) -> [Element; 11] {
     [
         Input::new(text).placeholder("Normal").enabled(false).into(),
-        Input::new(text).placeholder("Small Text").font_size(10.).enabled(false).into(),
+        Input::new(text)
+            .placeholder("Centered")
+            .text_align(TextAlign::Center)
+            .inner_margin(Gaps::new_symmetric(8., 4.))
+            .enabled(false)
+            .into(),
+        Input::new(text)
+            .placeholder("Small Text")
+            .font_size(10.)
+            .enabled(false)
+            .into(),
         Input::new(text)
             .placeholder("Filled")
             .enabled(false)
