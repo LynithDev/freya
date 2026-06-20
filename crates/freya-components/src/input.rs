@@ -181,7 +181,7 @@ pub struct Input {
     key: DiffKey,
     style_variant: InputStyleVariant,
     layout_variant: InputLayoutVariant,
-    text_align: TextAlign,
+    text_style: TextStyleData,
     a11y_id: Option<AccessibilityId>,
     leading: Option<Element>,
     trailing: Option<Element>,
@@ -210,7 +210,7 @@ impl Input {
             key: DiffKey::default(),
             style_variant: InputStyleVariant::Normal,
             layout_variant: InputLayoutVariant::Normal,
-            text_align: TextAlign::default(),
+            text_style: TextStyleData::default(),
             a11y_id: None,
             leading: None,
             trailing: None,
@@ -271,11 +271,6 @@ impl Input {
         self
     }
 
-    pub fn text_align(mut self, text_align: impl Into<TextAlign>) -> Self {
-        self.text_align = text_align.into();
-        self
-    }
-
     pub fn style_variant(mut self, style_variant: impl Into<InputStyleVariant>) -> Self {
         self.style_variant = style_variant.into();
         self
@@ -331,6 +326,12 @@ impl Input {
     ) -> Self {
         self.on_pre_key_down = on_pre_key_down.into();
         self
+    }
+}
+
+impl TextStyleExt for Input {
+    fn get_text_style_data(&mut self) -> &mut TextStyleData {
+        &mut self.text_style
     }
 }
 
@@ -684,7 +685,7 @@ impl Component for Input {
                             .cursor_index(cursor_index)
                             .cursor_color(cursor_color)
                             .color(color)
-                            .text_align(self.text_align)
+                            .text_style(self.text_style.clone())
                             .max_lines(1)
                             .highlights(text_selection.map(|h| vec![h]))
                             .maybe(display_placeholder, |el| {
